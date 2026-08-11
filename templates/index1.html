@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+   content="width=device-width, initial-scale=1.0">
+
+<title>AllStarLink Control</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #101318;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin-bottom: 4px;
+}
+
+.callsign {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 4px 0;
+}
+
+.card {
+    background: #1a1f27;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.label {
+    color: #9da7b3;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.node-number {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    font-size: 22px;
+    border-radius: 10px;
+    border: none;
+    background: #252b35;
+    color: white;
+    margin-bottom: 12px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.connect {
+    background: #16a34a;
+    color: white;
+}
+
+.disconnect {
+    background: #dc2626;
+    color: white;
+}
+
+.refresh {
+    background: #374151;
+    color: white;
+}
+
+.danger {
+    background: #991b1b;
+    color: white;
+}
+
+.status {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.connected {
+    color: #22c55e;
+}
+
+.not-connected {
+    color: #f59e0b;
+}
+
+
+/* =========================================
+   FAVOURITE NODES
+========================================= */
+
+.favourites-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+
+.favourite {
+
+    background: #252b35;
+
+    border: 2px solid transparent;
+
+    border-radius: 12px;
+
+    padding: 14px 8px;
+
+    color: white;
+
+    text-align: center;
+
+    min-height: 105px;
+
+    transition:
+        background 0.2s,
+        border 0.2s,
+        transform 0.1s;
+
+}
+
+
+.favourite:active {
+
+    transform: scale(0.97);
+
+}
+
+
+.favourite-number {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+
+.favourite-name {
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+
+}
+
+
+.favourite-info {
+
+    font-size: 12px;
+
+    color: #9da7b3;
+
+    margin-top: 3px;
+
+}
+
+
+.favourite-status {
+
+    font-size: 12px;
+
+    margin-top: 7px;
+
+    color: #f59e0b;
+
+}
+
+
+.favourite.is-connected {
+
+    background: #12351f;
+
+    border-color: #22c55e;
+
+}
+
+
+.favourite.is-connected
+.favourite-status {
+
+    color: #22c55e;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================
+   CONNECTED NODE GRID
+========================================= */
+
+.node-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+}
+
+
+.node {
+
+    background: #252b35;
+
+    padding: 12px 5px;
+
+    border-radius: 8px;
+
+    text-align: center;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.message {
+
+    text-align: center;
+
+    padding: 10px;
+
+    min-height: 40px;
+
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 400px) {
+
+    .container {
+
+        padding: 12px;
+
+    }
+
+
+    .card {
+
+        padding: 15px;
+
+    }
+
+
+    .favourite {
+
+        min-height: 100px;
+
+        padding: 12px 5px;
+
+    }
+
+
+    .favourite-number {
+
+        font-size: 20px;
+
+    }
+
+
+    .favourite-name {
+
+        font-size: 14px;
+
+    }
+
+
+    .favourite-info {
+
+        font-size: 11px;
+
+    }
+
+
+    .node-grid {
+
+        gap: 6px;
+
+    }
+
+
+    .node {
+
+        font-size: 15px;
+
+        padding: 10px 3px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<!-- =====================================
+     HEADER
+====================================== -->
+
+<div class="header">
+
+    <h1>AllStarLink</h1>
+
+    <div class="callsign">
+        VU24JD
+    </div>
+
+    <div>
+        Node Control
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     LOCAL NODE
+====================================== -->
+
+<div class="card">
+
+    <div class="label">
+        LOCAL NODE
+    </div>
+
+    <div class="node-number">
+        {{ local_node }}
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     FAVOURITE NODES
+====================================== -->
+
+<div class="card">
+
+    <div class="label">
+        FAVOURITE NODES
+    </div>
+
+
+    <div
+        id="favourites"
+        class="favourites-grid">
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     TARGET NODE
+====================================== -->
+
+<div class="card">
+
+    <div class="label">
+        TARGET NODE
+    </div>
+
+
+    <input
+        id="target"
+        type="number"
+        inputmode="numeric"
+        placeholder="Enter node number"
+    >
+
+
+    <div
+        id="targetStatus"
+        class="status">
+
+        Enter a node number
+
+    </div>
+
+
+    <button
+        class="connect"
+        onclick="connectNode()">
+
+        CONNECT
+
+    </button>
+
+
+    <button
+        class="disconnect"
+        onclick="disconnectNode()">
+
+        DISCONNECT
+
+    </button>
+
+</div>
+
+
+<!-- =====================================
+     CONNECTED NODES
+====================================== -->
+
+<div class="card">
+
+    <div class="label">
+
+        CONNECTED NODES
+        <span id="nodeCount"></span>
+
+    </div>
+
+
+    <div
+        id="nodes"
+        class="node-grid">
+
+        Loading...
+
+    </div>
+
+
+    <button
+        class="refresh"
+        onclick="refreshStatus()">
+
+        REFRESH
+
+    </button>
+
+</div>
+
+
+<!-- =====================================
+     DISCONNECT ALL
+====================================== -->
+
+<div class="card">
+
+    <button
+        class="danger"
+        onclick="disconnectAll()">
+
+        DISCONNECT ALL NODES
+
+    </button>
+
+</div>
+
+
+<!-- =====================================
+     MESSAGE
+====================================== -->
+
+<div
+    id="message"
+    class="message">
+
+</div>
+```
+
+</div>
+
+<script>
+
+
+/* =========================================
+   FAVOURITE NODE CONFIGURATION
+========================================= */
+
+
+/*
+ * Change these six entries to your
+ * preferred nodes.
+ *
+ * node = AllStarLink node number
+ * name = short name
+ * info = location / description
+ */
+
+
+const favourites = [
+
+    {
+        node: "2195",
+        name: "M7 Newly Licensed",
+        info: "UK"
+    },
+
+    {
+        node: "62499",
+        name: "Emcom Training",
+        info: "USA"
+    },
+
+    {
+        node: "2197",
+        name: "South India",
+        info: "Regional"
+    },
+
+    {
+        node: "1026",
+        name: "National",
+        info: "National Link"
+    },
+
+    {
+        node: "2000",
+        name: "Local",
+        info: "Repeater"
+    },
+
+    {
+        node: "3000",
+        name: "Backup",
+        info: "Backup Node"
+    }
+
+];
+
+
+/* =========================================
+   RENDER FAVOURITES
+========================================= */
+
+function renderFavourites(
+    connectedNodes = []
+) {
+
+    const container =
+        document.getElementById(
+            "favourites"
+        );
+
+
+    container.innerHTML =
+        favourites.map(fav => {
+
+            const connected =
+                connectedNodes.includes(
+                    String(fav.node)
+                );
+
+
+            return `
+
+                <button
+
+                    class="
+                        favourite
+                        ${connected
+                            ? "is-connected"
+                            : ""}
+                    "
+
+                    onclick="
+                        favouriteConnect(
+                            '${fav.node}'
+                        )
+                    "
+
+                >
+
+                    <div
+                        class="favourite-number">
+
+                        ${fav.node}
+
+                    </div>
+
+
+                    <div
+                        class="favourite-name">
+
+                        ${fav.name}
+
+                    </div>
+
+
+                    <div
+                        class="favourite-info">
+
+                        ${fav.info}
+
+                    </div>
+
+
+                    <div
+                        class="favourite-status">
+
+                        ${connected
+                            ? "● CONNECTED"
+                            : "○ NOT CONNECTED"}
+
+                    </div>
+
+                </button>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================
+   FAVOURITE CONNECT
+========================================= */
+
+async function favouriteConnect(
+    node
+) {
+
+    /*
+     * Put the node into the
+     * normal target input as well.
+     */
+
+    document
+        .getElementById("target")
+        .value = node;
+
+
+    /*
+     * If already connected,
+     * do not send another connect.
+     */
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/status",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        const connectedNodes =
+            (data.nodes || []).map(
+                String
+            );
+
+
+        if (
+            connectedNodes.includes(
+                String(node)
+            )
+        ) {
+
+            showMessage(
+                "Node " +
+                node +
+                " is already connected"
+            );
+
+            return;
+
+        }
+
+    }
+
+    catch (error) {
+
+        /*
+         * If status check fails,
+         * continue and attempt connect.
+         */
+
+    }
+
+
+    showMessage(
+        "Connecting to node " +
+        node +
+        "..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/connect",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        node: node
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            showMessage(
+                "Connect command sent to " +
+                node
+            );
+
+        }
+
+        else {
+
+            showMessage(
+                data.error ||
+                "Connect failed"
+            );
+
+        }
+
+
+        /*
+         * AllStarLink may take
+         * several seconds to establish.
+         */
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            2500
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to contact server"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   REFRESH NODE STATUS
+========================================= */
+
+async function refreshStatus() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/status",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const nodes =
+            document.getElementById(
+                "nodes"
+            );
+
+
+        const count =
+            document.getElementById(
+                "nodeCount"
+            );
+
+
+        const connectedNodes =
+            (data.nodes || []).map(
+                String
+            );
+
+
+        /* NODE COUNT */
+
+        count.innerText =
+            " (" +
+            connectedNodes.length +
+            ")";
+
+
+        /* RENDER FAVOURITES */
+
+        renderFavourites(
+            connectedNodes
+        );
+
+
+        /* NO CONNECTED NODES */
+
+        if (
+            connectedNodes.length === 0
+        ) {
+
+            nodes.innerHTML =
+
+                `<div
+                    class="node"
+                    style="
+                        grid-column:
+                        1 / -1;
+                    "
+                >
+                    No connected nodes
+                </div>`;
+
+        }
+
+
+        /* DISPLAY CONNECTED NODES */
+
+        else {
+
+            nodes.innerHTML =
+
+                connectedNodes
+                    .map(
+                        node =>
+
+                        `<div
+                            class="node">
+
+                            ${node}
+
+                        </div>`
+
+                    )
+                    .join("");
+
+        }
+
+
+        updateTargetStatus(
+            connectedNodes
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to contact server"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   TARGET STATUS
+========================================= */
+
+function updateTargetStatus(
+    nodes
+) {
+
+    const target =
+        document
+            .getElementById(
+                "target"
+            )
+            .value
+            .trim();
+
+
+    const status =
+        document
+            .getElementById(
+                "targetStatus"
+            );
+
+
+    if (!target) {
+
+        status.innerText =
+            "Enter a node number";
+
+        status.className =
+            "status";
+
+        return;
+
+    }
+
+
+    if (
+        nodes.includes(target)
+    ) {
+
+        status.innerText =
+            "● CONNECTED";
+
+        status.className =
+            "status connected";
+
+    }
+
+    else {
+
+        status.innerText =
+            "● NOT CONNECTED";
+
+        status.className =
+            "status not-connected";
+
+    }
+
+}
+
+
+/* =========================================
+   CONNECT NODE
+========================================= */
+
+async function connectNode() {
+
+    const node =
+        document
+            .getElementById(
+                "target"
+            )
+            .value
+            .trim();
+
+
+    if (!node) {
+
+        showMessage(
+            "Enter a target node"
+        );
+
+        return;
+
+    }
+
+
+    showMessage(
+        "Connecting to node " +
+        node +
+        "..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/connect",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        node: node
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            showMessage(
+                "Connect command sent to " +
+                node
+            );
+
+        }
+
+        else {
+
+            showMessage(
+                data.error ||
+                "Connect failed"
+            );
+
+        }
+
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            2500
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to contact server"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   DISCONNECT NODE
+========================================= */
+
+async function disconnectNode() {
+
+    const node =
+        document
+            .getElementById(
+                "target"
+            )
+            .value
+            .trim();
+
+
+    if (!node) {
+
+        showMessage(
+            "Enter a target node"
+        );
+
+        return;
+
+    }
+
+
+    showMessage(
+        "Disconnecting node " +
+        node +
+        "..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/disconnect",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        node: node
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            showMessage(
+                "Disconnect command sent to " +
+                node
+            );
+
+        }
+
+        else {
+
+            showMessage(
+                data.error ||
+                "Disconnect failed"
+            );
+
+        }
+
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            2500
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to contact server"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   DISCONNECT ALL
+========================================= */
+
+async function disconnectAll() {
+
+    if (
+        !confirm(
+            "Disconnect ALL connected nodes?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    showMessage(
+        "Disconnecting all nodes..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/disconnect-all",
+                {
+                    method: "POST"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            showMessage(
+                "Disconnect-all command sent"
+            );
+
+        }
+
+        else {
+
+            showMessage(
+                data.error ||
+                "Disconnect failed"
+            );
+
+        }
+
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            3000
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to contact server"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(message) {
+
+    document
+        .getElementById(
+            "message"
+        )
+        .innerText = message;
+
+}
+
+
+/* =========================================
+   TARGET INPUT
+========================================= */
+
+document
+    .getElementById(
+        "target"
+    )
+    .addEventListener(
+        "input",
+        refreshStatus
+    );
+
+
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+renderFavourites([]);
+
+refreshStatus();
+
+
+/* =========================================
+   AUTOMATIC REFRESH
+========================================= */
+
+setInterval(
+    refreshStatus,
+    5000
+);
+
+
+</script>
+
+</body>
+
+</html>
