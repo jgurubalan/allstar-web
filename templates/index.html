@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -7,7 +6,7 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-   content="width=device-width, initial-scale=1.0">
+      content="width=device-width, initial-scale=1.0">
 
 <title>AllStarLink Control</title>
 
@@ -86,6 +85,10 @@ button {
     cursor: pointer;
 }
 
+button:active {
+    transform: scale(0.98);
+}
+
 .connect {
     background: #16a34a;
     color: white;
@@ -111,6 +114,11 @@ button {
     color: white;
 }
 
+
+/* =========================================
+   STATUS
+========================================= */
+
 .status {
     font-size: 18px;
     margin-top: 10px;
@@ -121,6 +129,39 @@ button {
 }
 
 .not-connected {
+    color: #f59e0b;
+}
+
+
+/* =========================================
+   SYSTEM TELEMETRY
+========================================= */
+
+.telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.telemetry-item {
+    background: #252b35;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.telemetry-label {
+    color: #9da7b3;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.telemetry-value {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.temperature {
     color: #f59e0b;
 }
 
@@ -261,15 +302,21 @@ button {
         padding: 10px 3px;
     }
 
+    .telemetry-value {
+        font-size: 15px;
+    }
+
 }
 
 </style>
 
 </head>
 
+
 <body>
 
 <div class="container">
+
 
 <!-- =====================================
      HEADER
@@ -277,19 +324,18 @@ button {
 
 <div class="header">
 
-```
-<h1>AllStarLink</h1>
+    <h1>AllStarLink</h1>
 
-<div class="callsign">
-    VU24JD
-</div>
+    <div class="callsign">
+        VU24JD
+    </div>
 
-<div>
-    Node Control
-</div>
-```
+    <div>
+        Node Control
+    </div>
 
 </div>
+
 
 <!-- =====================================
      LOCAL NODE
@@ -297,17 +343,122 @@ button {
 
 <div class="card">
 
-```
-<div class="label">
-    LOCAL NODE
-</div>
+    <div class="label">
+        LOCAL NODE
+    </div>
 
-<div class="node-number">
-    {{ local_node }}
-</div>
-```
+    <div class="node-number">
+        {{ local_node }}
+    </div>
 
 </div>
+
+
+<!-- =====================================
+     SYSTEM TELEMETRY
+====================================== -->
+
+<div class="card">
+
+    <div class="label">
+        SYSTEM TELEMETRY
+    </div>
+
+    <div class="telemetry-grid">
+
+        <div class="telemetry-item">
+
+            <div class="telemetry-label">
+                DAY
+            </div>
+
+            <div
+                id="telemetry-day"
+                class="telemetry-value">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="telemetry-item">
+
+            <div class="telemetry-label">
+                DATE
+            </div>
+
+            <div
+                id="telemetry-date"
+                class="telemetry-value">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="telemetry-item">
+
+            <div class="telemetry-label">
+                LOCAL TIME
+            </div>
+
+            <div
+                id="telemetry-local"
+                class="telemetry-value">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="telemetry-item">
+
+            <div class="telemetry-label">
+                UTC
+            </div>
+
+            <div
+                id="telemetry-utc"
+                class="telemetry-value">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="telemetry-item">
+
+            <div class="telemetry-label">
+                US EASTERN
+            </div>
+
+            <div
+                id="telemetry-eastern"
+                class="telemetry-value">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="telemetry-item">
+
+            <div class="telemetry-label">
+                PI TEMPERATURE
+            </div>
+
+            <div
+                id="telemetry-temperature"
+                class="telemetry-value temperature">
+                --
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <!-- =====================================
      FAVOURITE NODES
@@ -315,18 +466,17 @@ button {
 
 <div class="card">
 
-```
-<div class="label">
-    FAVOURITE NODES
-</div>
+    <div class="label">
+        FAVOURITE NODES
+    </div>
 
-<div
-    id="favourites"
-    class="favourites-grid">
-</div>
-```
+    <div
+        id="favourites"
+        class="favourites-grid">
+    </div>
 
 </div>
+
 
 <!-- =====================================
      TARGET NODE
@@ -334,44 +484,45 @@ button {
 
 <div class="card">
 
-```
-<div class="label">
-    TARGET NODE
+    <div class="label">
+        TARGET NODE
+    </div>
+
+    <input
+        id="target"
+        type="number"
+        inputmode="numeric"
+        placeholder="Enter node number"
+    >
+
+    <div
+        id="targetStatus"
+        class="status">
+
+        Enter a node number
+
+    </div>
+
+
+    <button
+        class="connect"
+        onclick="connectNode()">
+
+        CONNECT
+
+    </button>
+
+
+    <button
+        class="disconnect"
+        onclick="disconnectNode()">
+
+        DISCONNECT
+
+    </button>
+
 </div>
 
-<input
-    id="target"
-    type="number"
-    inputmode="numeric"
-    placeholder="Enter node number"
->
-
-<div
-    id="targetStatus"
-    class="status">
-
-    Enter a node number
-
-</div>
-
-<button
-    class="connect"
-    onclick="connectNode()">
-
-    CONNECT
-
-</button>
-
-<button
-    class="disconnect"
-    onclick="disconnectNode()">
-
-    DISCONNECT
-
-</button>
-```
-
-</div>
 
 <!-- =====================================
      CONNECTED NODES
@@ -379,32 +530,33 @@ button {
 
 <div class="card">
 
-```
-<div class="label">
+    <div class="label">
 
-    CONNECTED NODES
-    <span id="nodeCount"></span>
+        CONNECTED NODES
+        <span id="nodeCount"></span>
+
+    </div>
+
+
+    <div
+        id="nodes"
+        class="node-grid">
+
+        Loading...
+
+    </div>
+
+
+    <button
+        class="refresh"
+        onclick="refreshStatus()">
+
+        REFRESH
+
+    </button>
 
 </div>
 
-<div
-    id="nodes"
-    class="node-grid">
-
-    Loading...
-
-</div>
-
-<button
-    class="refresh"
-    onclick="refreshStatus()">
-
-    REFRESH
-
-</button>
-```
-
-</div>
 
 <!-- =====================================
      DISCONNECT ALL
@@ -412,17 +564,16 @@ button {
 
 <div class="card">
 
-```
-<button
-    class="danger"
-    onclick="disconnectAll()">
+    <button
+        class="danger"
+        onclick="disconnectAll()">
 
-    DISCONNECT ALL NODES
+        DISCONNECT ALL NODES
 
-</button>
-```
+    </button>
 
 </div>
+
 
 <!-- =====================================
      REBOOT SYSTEM
@@ -430,17 +581,33 @@ button {
 
 <div class="card">
 
-```
-<button
-    class="reboot"
-    onclick="rebootSystem()">
+    <button
+        class="reboot"
+        onclick="rebootSystem()">
 
-    REBOOT PI
+        REBOOT PI
 
-</button>
-```
+    </button>
 
 </div>
+
+
+<!-- =====================================
+     SHUTDOWN SYSTEM
+====================================== -->
+
+<div class="card">
+
+    <button
+        class="danger"
+        onclick="shutdownSystem()">
+
+        SHUTDOWN PI
+
+    </button>
+
+</div>
+
 
 <!-- =====================================
      MESSAGE
@@ -451,7 +618,9 @@ button {
     class="message">
 </div>
 
+
 </div>
+
 
 <script>
 
@@ -469,35 +638,70 @@ const favourites = [
     },
 
     {
+        node: "2560",
+        name: "WIN SYSTEM",
+        info: "USA"
+    },
+
+    {
+        node: "2196",
+        name: "FeeSTAR UK Hub",
+        info: "UK"
+    },
+ 
+    {
+        node: "51288",
+        name: "Manchester",
+        info: "UK"
+    },
+    
+    {
+        node: "66063",
+        name: "VU22NK -  NAG",
+        info: "UAE"
+    },
+
+    {
+        node: "27339",
+        name: "East Cost Reflector",
+        info: "UK"
+    },    
+
+    {
         node: "62499",
         name: "Emcom Training",
         info: "USA"
     },
 
     {
-        node: "2197",
-        name: "South India",
-        info: "Regional"
+        node: "69424",
+        name: "GB3HC",
+        info: "Harlow, UK"
     },
 
     {
-        node: "1026",
-        name: "National",
-        info: "National Link"
+        node: "53789",
+        name: "MB7ISX",
+        info: "WestCliff On Sea, UK"
     },
 
     {
-        node: "2000",
-        name: "Local",
-        info: "Repeater"
+        node: "59948",
+        name: "MB7IEC",
+        info: "Cardiff, UK"
     },
 
     {
-        node: "3000",
-        name: "Backup",
-        info: "Backup Node"
+        node: "53547",
+        name: "VU24JD-Hub Node",
+        info: "USA"
     }
-
+ 
+    {
+        node: "2002",
+        name: "Parrot",
+        info: "ASL"
+    },
 ];
 
 
@@ -611,11 +815,13 @@ async function favouriteConnect(node) {
 
     }
 
+
     showMessage(
         "Connecting to node " +
         node +
         "..."
     );
+
 
     try {
 
@@ -636,8 +842,10 @@ async function favouriteConnect(node) {
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (data.success) {
 
@@ -657,11 +865,24 @@ async function favouriteConnect(node) {
 
         }
 
-        setTimeout(refreshStatus, 1000);
-        setTimeout(refreshStatus, 2500);
-        setTimeout(refreshStatus, 5000);
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            2500
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
 
     }
+
 
     catch (error) {
 
@@ -692,6 +913,7 @@ async function refreshStatus() {
                 }
             );
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -701,14 +923,22 @@ async function refreshStatus() {
 
         }
 
+
         const data =
             await response.json();
 
+
         const nodes =
-            document.getElementById("nodes");
+            document.getElementById(
+                "nodes"
+            );
+
 
         const count =
-            document.getElementById("nodeCount");
+            document.getElementById(
+                "nodeCount"
+            );
+
 
         const connectedNodes =
             (data.nodes || []).map(String);
@@ -757,11 +987,13 @@ async function refreshStatus() {
 
         }
 
+
         updateTargetStatus(
             connectedNodes
         );
 
     }
+
 
     catch (error) {
 
@@ -788,10 +1020,12 @@ function updateTargetStatus(nodes) {
             .value
             .trim();
 
+
     const status =
         document.getElementById(
             "targetStatus"
         );
+
 
     if (!target) {
 
@@ -804,6 +1038,7 @@ function updateTargetStatus(nodes) {
         return;
 
     }
+
 
     if (
         nodes.includes(target)
@@ -842,6 +1077,7 @@ async function connectNode() {
             .value
             .trim();
 
+
     if (!node) {
 
         showMessage(
@@ -852,11 +1088,13 @@ async function connectNode() {
 
     }
 
+
     showMessage(
         "Connecting to node " +
         node +
         "..."
     );
+
 
     try {
 
@@ -877,8 +1115,10 @@ async function connectNode() {
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (data.success) {
 
@@ -898,11 +1138,24 @@ async function connectNode() {
 
         }
 
-        setTimeout(refreshStatus, 1000);
-        setTimeout(refreshStatus, 2500);
-        setTimeout(refreshStatus, 5000);
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            2500
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
 
     }
+
 
     catch (error) {
 
@@ -929,6 +1182,7 @@ async function disconnectNode() {
             .value
             .trim();
 
+
     if (!node) {
 
         showMessage(
@@ -939,11 +1193,13 @@ async function disconnectNode() {
 
     }
 
+
     showMessage(
         "Disconnecting node " +
         node +
         "..."
     );
+
 
     try {
 
@@ -964,8 +1220,10 @@ async function disconnectNode() {
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (data.success) {
 
@@ -985,11 +1243,24 @@ async function disconnectNode() {
 
         }
 
-        setTimeout(refreshStatus, 1000);
-        setTimeout(refreshStatus, 2500);
-        setTimeout(refreshStatus, 5000);
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            2500
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
 
     }
+
 
     catch (error) {
 
@@ -1020,9 +1291,11 @@ async function disconnectAll() {
 
     }
 
+
     showMessage(
         "Disconnecting all nodes..."
     );
+
 
     try {
 
@@ -1034,8 +1307,10 @@ async function disconnectAll() {
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (data.success) {
 
@@ -1054,11 +1329,24 @@ async function disconnectAll() {
 
         }
 
-        setTimeout(refreshStatus, 1000);
-        setTimeout(refreshStatus, 3000);
-        setTimeout(refreshStatus, 5000);
+
+        setTimeout(
+            refreshStatus,
+            1000
+        );
+
+        setTimeout(
+            refreshStatus,
+            3000
+        );
+
+        setTimeout(
+            refreshStatus,
+            5000
+        );
 
     }
+
 
     catch (error) {
 
@@ -1089,9 +1377,11 @@ async function rebootSystem() {
 
     }
 
+
     showMessage(
         "Rebooting system..."
     );
+
 
     try {
 
@@ -1103,8 +1393,10 @@ async function rebootSystem() {
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (data.success) {
 
@@ -1125,6 +1417,7 @@ async function rebootSystem() {
 
     }
 
+
     catch (error) {
 
         /*
@@ -1134,6 +1427,202 @@ async function rebootSystem() {
 
         showMessage(
             "Reboot initiated"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SHUTDOWN SYSTEM
+========================================= */
+
+async function shutdownSystem() {
+
+    if (
+        !confirm(
+            "Shut down the AllStarLink Raspberry Pi?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    showMessage(
+        "Shutting down system..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/shutdown",
+                {
+                    method: "POST"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            showMessage(
+                "System shutdown initiated"
+            );
+
+        }
+
+        else {
+
+            showMessage(
+                data.error ||
+                "Shutdown failed"
+            );
+
+        }
+
+    }
+
+
+    catch (error) {
+
+        /*
+         * The connection may disappear
+         * immediately as the Pi powers off.
+         */
+
+        showMessage(
+            "Shutdown initiated"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SYSTEM TELEMETRY
+========================================= */
+
+async function updateTelemetry() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/telemetry",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Telemetry HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "telemetry-day"
+            )
+            .innerText =
+                data.day;
+
+
+        document
+            .getElementById(
+                "telemetry-date"
+            )
+            .innerText =
+                data.date;
+
+
+        document
+            .getElementById(
+                "telemetry-local"
+            )
+            .innerText =
+                data.local_time +
+                " " +
+                data.local_timezone;
+
+
+        document
+            .getElementById(
+                "telemetry-utc"
+            )
+            .innerText =
+                data.utc_time +
+                " UTC";
+
+
+        document
+            .getElementById(
+                "telemetry-eastern"
+            )
+            .innerText =
+                data.eastern_time +
+                " " +
+                data.eastern_timezone;
+
+
+        if (
+            data.pi_temperature !== null
+        ) {
+
+            document
+                .getElementById(
+                    "telemetry-temperature"
+                )
+                .innerText =
+                    data.pi_temperature +
+                    " °C";
+
+        }
+
+        else {
+
+            document
+                .getElementById(
+                    "telemetry-temperature"
+                )
+                .innerText =
+                    "Unavailable";
+
+        }
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Telemetry error:",
+            error
         );
 
     }
@@ -1174,14 +1663,26 @@ renderFavourites([]);
 
 refreshStatus();
 
+updateTelemetry();
+
 
 /* =========================================
-   AUTOMATIC REFRESH
+   AUTOMATIC NODE STATUS REFRESH
 ========================================= */
 
 setInterval(
     refreshStatus,
     5000
+);
+
+
+/* =========================================
+   AUTOMATIC TELEMETRY REFRESH
+========================================= */
+
+setInterval(
+    updateTelemetry,
+    2000
 );
 
 </script>
