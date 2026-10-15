@@ -299,6 +299,7 @@ def disconnect_all():
     })
 
 
+
 # ============================================================
 # REBOOT SYSTEM
 # ============================================================
@@ -306,13 +307,25 @@ def disconnect_all():
 @app.route("/api/reboot", methods=["POST"])
 def reboot():
     try:
-        subprocess.Popen([
-            "sudo", "-n", "/usr/bin/systemctl", "reboot"
-        ])
+        result = subprocess.run(
+            ["sudo", "-n", "/usr/bin/systemctl", "reboot"],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+
+        if result.returncode != 0:
+            return jsonify({
+                "success": False,
+                "error": result.stderr.strip() or
+                         "Reboot command failed"
+            }), 500
+
         return jsonify({
             "success": True,
-            "message": "System reboot initiated"
+            "message": "Reboot command accepted"
         })
+
     except Exception as exc:
         return jsonify({
             "success": False,
@@ -327,13 +340,25 @@ def reboot():
 @app.route("/api/shutdown", methods=["POST"])
 def shutdown():
     try:
-        subprocess.Popen([
-            "sudo", "-n", "/usr/bin/systemctl", "poweroff"
-        ])
+        result = subprocess.run(
+            ["sudo", "-n", "/usr/bin/systemctl", "poweroff"],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+
+        if result.returncode != 0:
+            return jsonify({
+                "success": False,
+                "error": result.stderr.strip() or
+                         "Shutdown command failed"
+            }), 500
+
         return jsonify({
             "success": True,
-            "message": "System shutdown initiated"
+            "message": "Shutdown command accepted"
         })
+
     except Exception as exc:
         return jsonify({
             "success": False,
